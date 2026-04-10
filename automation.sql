@@ -81,7 +81,18 @@ DELIMITER ;
 
 --
 
--- 
+-- Stored Procedure for Querying Patient Medications:
+-- This procedure accepts a Patient_ID as the argument and retrieves all of the medications associated with the Patient_ID from
+-- the Patient_Medications table.
+DROP PROCEDURE IF EXISTS get_patient_medications;
+DELIMITER //
+CREATE PROCEDURE get_patient_medications (IN ID INT)
+BEGIN
+	SELECT Medication FROM Patient_Medications WHERE Patient_ID = ID;
+END //
+DELIMITER ;
+
+-- Function for 
 
 
 -- A record to test the triggers:
@@ -89,6 +100,7 @@ INSERT INTO Patient (Patient_ID, Physician_ID, Name, SSN, Date_Of_Birth, Home_Ad
 VALUES (25, 24, 'Pedro Palacios', '111000025', '1986-07-14', '909 Zucchini St, San Antonio, TX', 'Cigna', 0.00, '888 Drugstore Ln', 'MRN-025');
 
 DELETE FROM Patient WHERE Patient_ID = 25;
-
+CALL get_patient_medications(23);
 SELECT * FROM Patient;
+SELECT * FROM Patient_Medications;
 SELECT * FROM Audit_Log;
