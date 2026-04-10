@@ -83,23 +83,24 @@ DELIMITER ;
 
 --
 
--- Stored Procedure for Querying Patient Medications:
+-- Stored Procedure for Querying Patient Medications -------------------------------------
 -- This procedure accepts a Patient_ID as the argument and retrieves all of the medications associated with the Patient_ID from
 -- the Patient_Medications table.
 DROP PROCEDURE IF EXISTS get_patient_medications;
 DELIMITER //
 CREATE PROCEDURE get_patient_medications (IN ID INT)
 BEGIN
-	SELECT Medication FROM Patient_Medications WHERE Patient_ID = ID;
+	SELECT Medication FROM Patient_Medications WHERE Patient_ID = ID; -- Retrieves the medications associated with the Patient_ID
 END //
 DELIMITER ;
 
+-- Function -------------------------------------
 -- Function for determining a Staff is able to work
 -- A Staff member is determined ready if they meet both the health screening and background check requirement.
 DROP FUNCTION IF EXISTS eligible_to_work;
 DELIMITER //
-CREATE FUNCTION eligible_to_work(ID int)
-RETURNS VARCHAR(12)
+CREATE FUNCTION eligible_to_work(ID int) -- Accepts a Staff member's ID as the argument
+RETURNS VARCHAR(12) -- Returns either "Eligible" or "Not Eligible"
 DETERMINISTIC
 BEGIN
 	DECLARE health_screening_completed INT;
@@ -112,7 +113,7 @@ BEGIN
 END //
 DELIMITER ;
 
-
+-- Usages -------------------------------------
 -- Test the record insertion trigger
 INSERT INTO Patient (Patient_ID, Physician_ID, Name, SSN, Date_Of_Birth, Home_Address, Insurance, Balance, Preferred_Pharmacy_Address, Medical_Record_Number)
 VALUES (25, 24, 'Pedro Palacios', '111000025', '1986-07-14', '909 Zucchini St, San Antonio, TX', 'Cigna', 0.00, '888 Drugstore Ln', 'MRN-025');
@@ -134,7 +135,7 @@ SELECT * FROM Audit_Log;
 -- Call the get_patient_medications stored procedure to retrieve the medications for the specified patient ID
 CALL get_patient_medications(23);
 
--- Determine if a Staff member is eligible to work if their health screening and background check requirements are completed
+-- Determine if a Staff member (with their Staff_ID) is eligible to work if their health screening and background check requirements are completed
 SELECT eligible_to_work(101) AS "Work Eligibility";
 
 SELECT * FROM Patient;
