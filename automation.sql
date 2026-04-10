@@ -1,3 +1,5 @@
+USE clinic;
+
 -- Create Audit_Log table to store a log of Patient and Staff record modifications
 
 DROP TABLE IF EXISTS Audit_Log;
@@ -111,14 +113,31 @@ END //
 DELIMITER ;
 
 
--- A record to test the triggers:
+-- Test the record insertion trigger
 INSERT INTO Patient (Patient_ID, Physician_ID, Name, SSN, Date_Of_Birth, Home_Address, Insurance, Balance, Preferred_Pharmacy_Address, Medical_Record_Number)
 VALUES (25, 24, 'Pedro Palacios', '111000025', '1986-07-14', '909 Zucchini St, San Antonio, TX', 'Cigna', 0.00, '888 Drugstore Ln', 'MRN-025');
 
+SELECT * FROM Audit_Log;
+
+-- Test the record deletion trigger
 DELETE FROM Patient WHERE Patient_ID = 25;
+
+SELECT * FROM Audit_Log;
+
+-- Test the record update trigger by first inserting the record back into the Patient table and updating it
+INSERT INTO Patient (Patient_ID, Physician_ID, Name, SSN, Date_Of_Birth, Home_Address, Insurance, Balance, Preferred_Pharmacy_Address, Medical_Record_Number)
+VALUES (25, 24, 'Pedro Palacios', '111000025', '1986-07-14', '909 Zucchini St, San Antonio, TX', 'Cigna', 0.00, '888 Drugstore Ln', 'MRN-025');
+UPDATE Patient SET Date_Of_Birth = '2005-11-10' WHERE Patient_ID = 25;
+
+SELECT * FROM Audit_Log;
+
+-- Call the get_patient_medications stored procedure to retrieve the medications for the specified patient ID
 CALL get_patient_medications(23);
+
+-- Determine if a Staff member is eligible to work if their health screening and background check requirements are completed
 SELECT eligible_to_work(101) AS "Work Eligibility";
+
 SELECT * FROM Patient;
 SELECT * FROM Patient_Medications;
 Select * FROM Staff;
-SELECT * FROM Audit_Log;
+
