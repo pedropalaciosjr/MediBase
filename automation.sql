@@ -92,7 +92,23 @@ BEGIN
 END //
 DELIMITER ;
 
--- Function for 
+-- Function for determining a Staff is able to work
+-- A Staff member is determined ready if they meet both the health screening and background check requirement.
+DROP FUNCTION IF EXISTS eligible_to_work;
+DELIMITER //
+CREATE FUNCTION eligible_to_work(ID int)
+RETURNS VARCHAR(12)
+DETERMINISTIC
+BEGIN
+	DECLARE health_screening_completed INT;
+    DECLARE background_check_completed INT;
+    
+    SELECT Health_Screening_Complete, Background_Check_Complete INTO health_screening_completed, background_check_completed
+    FROM Staff WHERE Staff_ID = ID;
+    
+    RETURN IF((health_screening_completed = 1 AND background_check_completed = 1), "Eligible", "Not Eligible");
+END //
+DELIMITER ;
 
 
 -- A record to test the triggers:
@@ -101,6 +117,8 @@ VALUES (25, 24, 'Pedro Palacios', '111000025', '1986-07-14', '909 Zucchini St, S
 
 DELETE FROM Patient WHERE Patient_ID = 25;
 CALL get_patient_medications(23);
+SELECT eligible_to_work(101) AS "Work Eligibility";
 SELECT * FROM Patient;
 SELECT * FROM Patient_Medications;
+Select * FROM Staff;
 SELECT * FROM Audit_Log;
